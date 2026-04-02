@@ -1,0 +1,20 @@
+Opciones para MySQL:
+
+MySQL Workbench - https://www.mysql.com/products/workbench/
+phpMyAdmin - Si lo tienes instalado en tu servidor
+HeidiSQL - https://www.heidisql.com/
+DBeaver - https://dbeaver.io/ (universal)
+Conexión MySQL:
+
+Host: localhost
+Puerto: 3307
+Usuario: root
+Contraseña: rootpassword
+Base de datos: caliconnect
+Una vez conectado en MySQL Workbench:
+
+Abre una nueva conexión
+Ejecuta: USE caliconnect;
+Copia y pega los INSERT del archivo agregar_productos.sql en una nueva consulta
+Presiona el botón de ejecutar (rayo)
+
