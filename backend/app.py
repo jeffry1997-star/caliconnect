@@ -21,7 +21,15 @@ DB_CONFIG = {
 
 def get_db_connection():
     """Create a database connection"""
-    return pymysql.connect(**DB_CONFIG)
+    # Ensure proper types for connection parameters
+    config = DB_CONFIG.copy()
+    # Convert port to int if present
+    if 'port' in config and isinstance(config['port'], str):
+        config['port'] = int(config['port'])
+    # Ensure charset is string
+    if 'charset' in config and not isinstance(config['charset'], str):
+        config['charset'] = str(config['charset'])
+    return pymysql.connect(**config)
 
 def init_database():
     """Initialize database and create tables"""
