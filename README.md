@@ -1,2 +1,0 @@
-# caliconnect
-empresa_caliconnect
