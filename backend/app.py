@@ -16,7 +16,9 @@ DB_CONFIG = {
     'user': os.getenv('DB_USER', 'root'),
     'password': os.getenv('DB_PASSWORD', 'rootpassword'),
     'database': os.getenv('DB_NAME', 'caliconnect'),
-    'charset': 'utf8mb4'
+    'charset': 'utf8mb4',
+    # Add port with default MySQL port
+    'port': int(os.getenv('DB_PORT', '3306'))
 }
 
 def get_db_connection():
