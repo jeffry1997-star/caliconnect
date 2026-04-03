@@ -133,7 +133,7 @@ def get_products():
         connection = get_db_connection()
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT * FROM products ORDER BY id")
-            products = cursor.fetch_all()
+            products = cursor.fetchall()
             
             # Convert Decimal to float for JSON serialization
             for product in products:
@@ -154,7 +154,7 @@ def get_product(product_id):
         connection = get_db_connection()
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT * FROM products WHERE id = %s", (product_id,))
-            product = cursor.fetch_one()
+            product = cursor.fetchone()
             
             if product and product.get('price'):
                 product['price'] = float(product['price'])
