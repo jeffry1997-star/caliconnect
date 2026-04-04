@@ -257,7 +257,7 @@ body {
 #category-filter {
     border-radius: 10px;
 }
-
+loadCartFromStorage
 /* Carousel Wrapper */
 .products-carousel-wrapper {
     position: relative;

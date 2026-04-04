@@ -6,7 +6,7 @@ const API_BASE_URL = window.location.hostname.includes('github.dev')
 
 // ==================== State ====================
 let cart = [];
-let products = [];
+let products = 300; 
 // ==================== Products ====================
 
 // Esta función debe devolver un ARRAY de objetos
@@ -20,7 +20,7 @@ function getDemoProducts() {
         { id: 6, name: 'Mantenimiento', description: 'Soporte mensual', price: 50.00, icon: 'fa-tools' }
     ];
 }
-
+//
 async function loadProducts() {
     try {
         const response = await fetch(`${API_BASE_URL}/products`);
@@ -34,36 +34,75 @@ async function loadProducts() {
     } finally {
         renderProducts();
     }
-    function renderProducts() {
-    const container = document.getElementById('products-container');
-    container.innerHTML = '';
-
-    products.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-            <div class="product-image">
-                <img src="${product.image_url || 'placeholder.png'}" alt="${product.name}">
+}
+//aqui empieza la carga de los productos del demo
+function renderDemoProducts() {
+    const demoData = getDemoProducts();
+    renderProducts(demoData, 'demo-container');
+}
+demoContainer.innerHTML = demoProducts.map(product => `
+        <div class="product-card">
+            <div class="product-image text-center py-4">
+                <i class="fas ${product.icon} fa-3x text-secondary"></i>
             </div>
             <div class="product-info">
                 <h5 class="product-title">${product.name}</h5>
                 <p class="product-price">$${product.price.toFixed(2)}</p>
+                <button class="btn btn-outline-primary w-100" onclick="addToCart(${product.id})">
+                    Agregar al carrito
+                </button>
             </div>
-            <button class="btn btn-primary product-btn" onclick="addToCart(${product.id})">Agregar al carrito</button>
-        `;
-        container.appendChild(card);
-    });
+        </div>
+    `).join('');
 
-    // Actualizamos scrollAmount después de renderizar
-    initCarousel();
+function renderProducts() {
+    const container = document.getElementById('products-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+
+    // Busca esta parte en tu renderProducts()
+products.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+        <div class="product-image text-center py-3">
+            <i class="fas ${product.icon || 'fa-box'} fa-3x text-primary"></i>
+        </div>
+        <div class="product-info">
+            <h5 class="product-title">${product.name}</h5>
+            <p class="product-price">$${product.price.toFixed(2)}</p>
+            <button class="btn btn-primary product-btn" onclick="addToCart(${product.id})">
+                Agregar al carrito
+            </button>
+        </div>
+    `;
+    container.appendChild(card);
+});
+    // CRUCIAL: Recalcular el tamaño del scroll después de renderizar
+    updateScrollAmount();
 }
+
+// 2. Función para medir la tarjeta real
+function updateScrollAmount() {
+    const firstCard = document.querySelector('.product-card');
+    if (firstCard) {
+        // Medimos el ancho real de la tarjeta + el gap (margen)
+        scrollAmount = firstCard.offsetWidth + 20; 
+    }
 }
+// Carrusel Demo
+document.getElementById('next-demo-btn').addEventListener('click', () => {
+    document.getElementById('demo-container').scrollBy({ left: scrollAmount, behavior: 'smooth' });
+});
+document.getElementById('prev-demo-btn').addEventListener('click', () => {
+    document.getElementById('demo-container').scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+});
+
+// 3. Listeners (ahora usan la variable scrollAmount actualizada)
 const container = document.getElementById('products-container');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
-
-const productCard = document.querySelector('.product-card');
-const scrollAmount = productCard ? productCard.offsetWidth + 20 : 300; // ancho + gap
 
 nextBtn.addEventListener('click', () => {
     container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
@@ -71,6 +110,18 @@ nextBtn.addEventListener('click', () => {
 
 prevBtn.addEventListener('click', () => {
     container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+});
+
+// 4. Iniciar la carga al abrir la página
+document.addEventListener('DOMContentLoaded', () => {
+    // Carga los productos de la base de datos (MySQL)
+    loadProducts(); 
+    
+    //  Carga los productos del array estático
+    renderDemoProducts(); 
+    
+    // Carga el carrito guardado
+    loadCartFromStorage();
 });
 
 // ==================== Cart ====================
@@ -350,6 +401,7 @@ function showToast(message, type = 'success') {
 // ==================== Initialize ====================
 document.addEventListener('DOMContentLoaded', function() {
     loadCartFromStorage();
+    renderDemoProducts();
     loadProducts();
     initChat();
     initNetworkForm();
