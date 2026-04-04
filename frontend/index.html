@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cali Connect - Servicios Integrados</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>CaliConnect - Servicios Integrados</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
 </head>
 <body>
@@ -114,23 +114,50 @@
     </section>
     <!-- Tienda / Carrito -->
     <section id="tienda" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-center mb-5">Nuestra Tienda</h2>
-            <div class="row" id="products-container">
-                <!-- Products will be loaded from backend -->
+    <div class="container">
+        <h2 class="text-center mb-5">Nuestra Tienda</h2>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    class="form-control" 
+                    placeholder="🔍 Buscar productos..."
+                >
             </div>
-           
-            <!-- Cart Section -->
-            <div class="cart-section mt-5">
-                <h3>Carrito de Compras</h3>
-                <div id="cart-items"></div>
-                <div class="cart-total">
-                    <h4>Total: $<span id="cart-total">0.00</span></h4>
-                    <div id="paypal-button-container"></div>
-                </div>
+            <div class="col-md-6 mb-3">
+                <select id="category-filter" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    <option value="web">Web</option>
+                    <option value="network">Redes</option>
+                    <option value="messaging">Mensajería</option>
+                    <option value="support">Soporte</option>
+                </select>
             </div>
         </div>
-    </section>
+
+        <div class="products-carousel-wrapper">
+    <button id="prev-btn" class="carousel-btn left">&lt;</button>
+    <div id="products-container">
+        <!-- Aquí van tus productos -->
+        <div class="product-card">...</div>
+        <div class="product-card">...</div>
+        <!-- ... -->
+    </div>
+    <button id="next-btn" class="carousel-btn right">&gt;</button>
+</div>
+        
+        <div class="cart-section mt-5 p-4 bg-white rounded shadow-sm">
+            <h3><i class="fas fa-shopping-basket me-2"></i>Carrito de Compras</h3>
+            <div id="cart-items" class="mb-3"></div>
+            <div class="cart-total text-end">
+                <h4 class="mb-3">Total: $<span id="cart-total">0.00</span></h4>
+                <div id="paypal-button-container" style="max-width: 300px; margin-left: auto;"></div>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Servicios de Redes -->
     <section id="redes" class="py-5 bg-light">
         <div class="container">
@@ -286,7 +313,7 @@
                     <ul class="list-unstyled">
                         <li><a href="#servicios" class="text-white">Servicios</a></li>
                         <li><a href="#tienda" class="text-white">Tienda</a></li>
-                        <li><a href="#mensajeria" class="text-white">Mensajería</a></li>
+                        <li><a href="#desarrollo-web" class="text-white">desarrollo-web</a></li>
                         <li><a href="#redes" class="text-white">Redes</a></li>
                     </ul>
                 </div>

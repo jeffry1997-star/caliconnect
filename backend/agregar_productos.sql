@@ -4,7 +4,15 @@
 -- =====================================================
 
 -- Ver productos actuales
-SELECT * FROM products;
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT,
+    price DECIMAL(10,2),
+    icon VARCHAR(100),
+    category VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
 -- =====================================================
 -- OPCIÓN 1: Agregar productos manualmente con INSERT
@@ -72,29 +80,3 @@ INSERT INTO products (name, description, price, icon, category) VALUES
 ('Tarjeta Gráfica RTX 4060', 'NVIDIA GeForce RTX 4060 8GB', 399.00, 'fa-microchip', 'components');
 
 -- =====================================================
--- OPCIÓN 2: Actualizar un producto existente
--- =====================================================
-UPDATE products 
-SET price = 79.99, description = 'Nueva descripción'
-WHERE id = 1;
-
--- =====================================================
--- OPCIÓN 3: Eliminar un producto
--- =====================================================
-DELETE FROM products WHERE id = 5;
-
--- =====================================================
--- CÓMO EJECUTAR ESTOS SCRIPTS:
--- =====================================================
--- 
--- Opción A -Desde MySQL Workbench o phpMyAdmin:
---    Copia y pega los comandos en una nueva consulta
---
--- Opción B -Desde línea de comandos:
---    docker exec -i caliconnect_mysql mysql -uroot -prootpassword caliconnect < productos.sql
---
--- Opción C -Desde terminal MySQL:
---    docker exec -it caliconnect_mysql mysql -uroot -prootpassword
---    USE caliconnect;
---    (ahora pega los comandos)
---

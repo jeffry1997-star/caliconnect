@@ -254,18 +254,83 @@ body {
 }
 
 /* Products Grid */
-#products-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+#category-filter {
+    border-radius: 10px;
 }
 
+/* Carousel Wrapper */
+.products-carousel-wrapper {
+    position: relative;
+    padding: 0 20px;
+    overflow: hidden;
+}
+
+#products-container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 15px 0;
+}
+
+#products-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Cada producto */
 .product-card {
+    flex: 0 0 calc((100% - 60px) / 4); /* 4 columnas con gap de 20px */
+    min-width: calc((100% - 60px) / 4);
+    max-width: calc((100% - 60px) / 4);
     background: white;
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: all 0.3s;
+    padding: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.products-carousel {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 20px 10px;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+.products-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+/* Botones del carrusel */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.carousel-btn:hover {
+    background: #0b5ed7;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-btn.left {
+    left: 0;
+}
+
+.carousel-btn.right {
+    right: 0;
 }
 
 .product-card:hover {
@@ -273,28 +338,36 @@ body {
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
-.product-image {
+/* Imagen del producto visible y uniforme */
+.product-card img {
     width: 100%;
     height: 200px;
-    object-fit: cover;
-    background: var(--light-color);
+    object-fit: cover; /* mantiene imagen visible y proporcional */
+    border-radius: 10px;
+
+.product-card .product-image {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    background: #f8f9fa;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .product-image i {
-    font-size: 60px;
+    font-size: 50px;
     color: var(--secondary-color);
 }
 
 .product-info {
-    padding: 20px;
+    padding: 15px 5px;
 }
 
 .product-title {
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    font-size: 16px;
 }
 
 .product-price {
@@ -305,8 +378,8 @@ body {
 
 .product-description {
     color: var(--secondary-color);
-    font-size: 14px;
-    margin: 10px 0;
+    font-size: 13px;
+    margin: 8px 0;
 }
 
 .product-btn {
@@ -354,11 +427,17 @@ footer a:hover {
 }
 
 /* Responsive */
+/* Responsivo: móvil 1 columna */
 @media (max-width: 768px) {
-    .hero-section {
-        text-align: center;
-        padding: 50px 0;
+    .product-card {
+        flex: 0 0 100%;
+        min-width: 100%;
+        max-width: 100%;
     }
+    .product-card img {
+        height: 150px;
+    }
+}
     
     .hero-section .col-lg-6 {
         margin-top: 30px;
@@ -366,6 +445,26 @@ footer a:hover {
     
     .chat-messages {
         height: 300px;
+    }
+    
+    #products-container {
+     -ms-overflow-style: none;  /* IE/Edge */
+     scrollbar-width: none;     /* Firefox */
+    }
+    
+    
+    .product-card .product-image,
+    .product-card img {
+        height: 120px !important;
+    }
+}
+/* Responsivo: tablets 2 columnas */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .product-card {
+        flex: 0 0 calc((100% - 20px) / 2) !important;
+        min-width: calc((100% - 20px) / 2) !important;
+        max-width: calc((100% - 20px) / 2) !important;
     }
 }
 
@@ -438,4 +537,7 @@ footer a:hover {
 }
 html {
     scroll-behavior: smooth;
+}
+#search-input {
+    border-radius: 10px;
 }

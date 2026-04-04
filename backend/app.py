@@ -13,8 +13,8 @@ CORS(app)
 # Database configuration
 DB_CONFIG = {
     'host': os.getenv('DB_HOST', 'mysql'),
-    'user': os.getenv('DB_USER', 'root'),
-    'password': os.getenv('DB_PASSWORD', 'rootpassword'),
+    'user': os.getenv('DB_USER', 'caliconnect'),
+    'password': os.getenv('DB_PASSWORD', 'caliconnect_pass'),
     'database': os.getenv('DB_NAME', 'caliconnect'),
     'charset': 'utf8mb4',
     # Add port with default MySQL port
@@ -123,7 +123,8 @@ def init_database():
     except Exception as e:
         print(f"Database initialization error: {e}")
     finally:
-        connection.close()
+        if 'connection' in locals():
+            connection.close()
 
 # ==================== Products API ====================
 @app.route('/api/products', methods=['GET'])
@@ -145,7 +146,8 @@ def get_products():
         print(f"Error fetching products: {e}")
         return jsonify([])
     finally:
-        connection.close()
+         if 'connection' in locals():
+             connection.close()
 
 @app.route('/api/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
@@ -164,7 +166,8 @@ def get_product(product_id):
         print(f"Error fetching product: {e}")
         return jsonify({})
     finally:
-        connection.close()
+        if 'connection' in locals():
+            connection.close()
 
 # ==================== Orders API ====================
 @app.route('/api/orders', methods=['POST'])
@@ -190,7 +193,8 @@ def create_order():
         print(f"Error creating order: {e}")
         return jsonify({'success': False, 'error': str(e)})
     finally:
-        connection.close()
+         if 'connection' in locals():
+             connection.close()
 
 @app.route('/api/orders', methods=['GET'])
 def get_orders():
@@ -199,7 +203,7 @@ def get_orders():
         connection = get_db_connection()
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT * FROM orders ORDER BY created_at DESC")
-            orders = cursor.fetch_all()
+            orders = cursor.fetchall()
             
             for order in orders:
                 if order.get('amount'):
@@ -210,7 +214,8 @@ def get_orders():
         print(f"Error fetching orders: {e}")
         return jsonify([])
     finally:
-        connection.close()
+        if 'connection' in locals():
+            connection.close()
 
 # ==================== Network Quotes API ====================
 @app.route('/api/network-quotes', methods=['POST'])
@@ -234,8 +239,9 @@ def create_network_quote():
     except Exception as e:
         print(f"Error creating network quote: {e}")
         return jsonify({'success': False, 'error': str(e)})
-    finally:
-        connection.close()
+    finally:    
+        if 'connection' in locals():
+            connection.close()
 
 @app.route('/api/network-quotes', methods=['GET'])
 def get_network_quotes():
@@ -244,14 +250,15 @@ def get_network_quotes():
         connection = get_db_connection()
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute("SELECT * FROM network_quotes ORDER BY created_at DESC")
-            quotes = cursor.fetch_all()
+            quotes = cursor.fetchall()
             
         return jsonify(quotes)
     except Exception as e:
         print(f"Error fetching network quotes: {e}")
         return jsonify([])
-    finally:
-        connection.close()
+    finally:     
+        if 'connection' in locals():
+            connection.close()
 
 # ==================== Messaging API ====================
 @app.route('/api/chat', methods=['POST'])
@@ -279,8 +286,9 @@ def send_message():
     except Exception as e:
         print(f"Error sending message: {e}")
         return jsonify({'response': 'Lo siento, hubo un error. Intenta de nuevo.'})
-    finally:
-        connection.close()
+    finally:        
+        if 'connection' in locals():
+            connection.close()
 
 def get_bot_response(message):
     """Generate bot response based on message"""

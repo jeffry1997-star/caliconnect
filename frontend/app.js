@@ -1,58 +1,77 @@
 // Cali Connect - Frontend Application
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = window.location.hostname.includes('github.dev')
+  ? window.location.origin.replace('8080', '5000') + '/api'
+  : '/api';
 
 // ==================== State ====================
 let cart = [];
 let products = [];
-
 // ==================== Products ====================
-async function loadProducts() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/products`);
-        products = await response.json();
-        renderProducts();
-    } catch (error) {
-        console.error('Error loading products:', error);
-        // Fallback to demo products
-        products = getDemoProducts();
-        renderProducts();
-    }
-}
 
+// Esta función debe devolver un ARRAY de objetos
 function getDemoProducts() {
     return [
-        { id: 1, name: 'Servicio de Página Web Basic', description: 'Página web básica con 5 secciones', price: 150.00, icon: 'fa-globe' },
-        { id: 2, name: 'Servicio de Página Web Pro', description: 'Página web profesional con CMS', price: 350.00, icon: 'fa-laptop-code' },
-        { id: 3, name: 'Tienda Online Basic', description: 'E-commerce con 50 productos', price: 400.00, icon: 'fa-shopping-bag' },
-        { id: 4, name: 'Configuración Router', description: 'Configuración completa de router empresarial', price: 80.00, icon: 'fa-router' },
-        { id: 5, name: 'Configuración Switch', description: 'Switch gestionable con VLANs', price: 120.00, icon: 'fa-network-wired' },
-        { id: 6, name: 'Paquete Redes Corporativas', description: 'Router + Switch + Instalación', price: 250.00, icon: 'fa-server' },
-        { id: 7, name: 'Sistema de Mensajería', description: 'Chat en vivo para tu sitio web', price: 100.00, icon: 'fa-comments' },
-        { id: 8, name: 'Mantenimiento Mensual', description: 'Soporte técnico y actualizaciones', price: 50.00, icon: 'fa-tools' }
+        { id: 1, name: 'Web Basic', description: 'Sitio de 5 secciones', price: 150.00, icon: 'fa-globe' },
+        { id: 2, name: 'Web Pro', description: 'CMS y Blog', price: 350.00, icon: 'fa-laptop-code' },
+        { id: 3, name: 'Tienda Online', description: 'E-commerce completo', price: 400.00, icon: 'fa-shopping-bag' },
+        { id: 4, name: 'Configuración Router', description: 'Router empresarial', price: 80.00, icon: 'fa-router' },
+        { id: 5, name: 'Configuración Switch', description: 'VLANs y Gestión', price: 120.00, icon: 'fa-network-wired' },
+        { id: 6, name: 'Mantenimiento', description: 'Soporte mensual', price: 50.00, icon: 'fa-tools' }
     ];
 }
 
-function renderProducts() {
+async function loadProducts() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/products`);
+        if (!response.ok) throw new Error('API no disponible');
+        
+        products = await response.json();
+        console.log('Productos cargados desde API');
+    } catch (error) {
+        console.warn('Cargando productos de prueba...');
+        products = getDemoProducts();
+    } finally {
+        renderProducts();
+    }
+    function renderProducts() {
     const container = document.getElementById('products-container');
-    if (!container) return;
-    
-    container.innerHTML = products.map(product => `
-        <div class="product-card">
+    container.innerHTML = '';
+
+    products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
             <div class="product-image">
-                <i class="fas ${product.icon}"></i>
+                <img src="${product.image_url || 'placeholder.png'}" alt="${product.name}">
             </div>
             <div class="product-info">
                 <h5 class="product-title">${product.name}</h5>
-                <p class="product-description">${product.description}</p>
-                <div class="product-price">$${product.price.toFixed(2)}</div>
-                <button class="btn btn-primary product-btn" onclick="addToCart(${product.id})">
-                    <i class="fas fa-cart-plus"></i> Agregar al Carrito
-                </button>
+                <p class="product-price">$${product.price.toFixed(2)}</p>
             </div>
-        </div>
-    `).join('');
+            <button class="btn btn-primary product-btn" onclick="addToCart(${product.id})">Agregar al carrito</button>
+        `;
+        container.appendChild(card);
+    });
+
+    // Actualizamos scrollAmount después de renderizar
+    initCarousel();
 }
+}
+const container = document.getElementById('products-container');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+
+const productCard = document.querySelector('.product-card');
+const scrollAmount = productCard ? productCard.offsetWidth + 20 : 300; // ancho + gap
+
+nextBtn.addEventListener('click', () => {
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+});
+
+prevBtn.addEventListener('click', () => {
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+});
 
 // ==================== Cart ====================
 function addToCart(productId) {
@@ -334,14 +353,37 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts();
     initChat();
     initNetworkForm();
+    initCarousel();
     
     // Initialize PayPal after a short delay
     setTimeout(initPayPal, 1000);
 });
 
-// Export functions to global scope
+// ==================== Carousel Logic ====================
+function initCarousel() {
+    const container = document.getElementById('products-container');
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+
+    if (!container || !nextBtn || !prevBtn) return;
+
+    function getScrollAmount() {
+        const card = container.querySelector('.product-card');
+        if (card) {
+            const gap = 20; // coincide con tu CSS #products-container gap
+            return card.offsetWidth + gap;
+        }
+        return 300;
+    }
+
+    nextBtn.onclick = () => container.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    prevBtn.onclick = () => container.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+}
+// ==================== Global Scope Export ====================
+// Necesario para que los eventos 'onclick' del HTML funcionen correctamente
 window.addToCart = addToCart;
 window.removeFromCart = removeFromCart;
 window.updateQuantity = updateQuantity;
 window.showRouterQuote = showRouterQuote;
 window.showSwitchQuote = showSwitchQuote;
+
